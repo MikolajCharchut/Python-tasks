@@ -3,7 +3,7 @@ import sys
 import time
 
 #Budka Suflera ID: 359282
-#Queens Of The Stone Age: 56168
+#Queens Of The Stone Age ID: 56168
 
 try:
     id = int(input('Eneter band ID: '))
