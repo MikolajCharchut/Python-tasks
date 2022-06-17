@@ -1,19 +1,24 @@
 import requests
 import sys
+import time
 
-#page_url = 'https://api.discogs.com/artists/359282' #Budka Suflera
-#page_url = 'https://api.discogs.com/artists/56168' #Queens Of The Stone Age
+#Budka Suflera ID: 359282
+#Queens Of The Stone Age: 56168
 
 try:
-    id = int(input('Podaj id zespołu: '))
+    id = int(input('Eneter band ID: '))
 except:
-    print('Złe id zespołu')
+    print('Bad ID')
 
 page_url = 'https://api.discogs.com/artists/' + str(id)
 
 page = requests.get(page_url)
 
-if page.status_code != 200:
+if int(page.headers.get('X-Discogs-Ratelimit-Remaining')) == 0:
+    print('Rate limit achived, please wait 1 min..')
+    time.sleep(60)
+
+if page.status_code != 200 | page.status_code != 429:
     print("Bad server status")
     sys.exit(1)
 
@@ -24,11 +29,15 @@ names = {}
 for i in membersList:
     bands = []
     getBand = requests.get(i['resource_url'])
+    if int(getBand.headers.get('X-Discogs-Ratelimit-Remaining')) == 0:
+        print('Rate limit achived, please wait 1 min..')
+        time.sleep(60)
     try:
         for j in getBand.json()['groups']:
             bands.append(j['name'])
         names[i['name']] = bands
     except: pass
+
 
 result = {}
 bands = []
@@ -50,6 +59,6 @@ for i in names:
 
 for i in sorted(result):
     if len(result[i]) >= 2:
-        print('Zespół:', i, '|| Członkowie:', result[i])
+        print('Band:', i, '|| Members:', result[i])
 
 sys.exit(0)
