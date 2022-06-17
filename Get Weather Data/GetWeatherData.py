@@ -5,12 +5,9 @@ import sys
 page_url = 'https://pogoda.onet.pl/prognoza-pogody/krakow-306020'
 page = requests.get(page_url)
 
-#print("Server status: ", page.status_code)
 if page.status_code != 200:
     print("Bad server status")
     sys.exit(1)
-
-#print("Typ stony: ", page.headers.get('Content-Type'))
 
 if 'text/html' not in page.headers.get('Content-Type'):
     print("Bad type")
@@ -29,7 +26,6 @@ for i in range(7):
 data["Temperatura"] = soup.find('div', attrs={'class': 'temperature'}).text
 
 for i in data:
-    #print(i, ':', data[i])
     val = str(data[i]).split()
     if "%" in val[0]:
         val[0] = val[0].strip('%')
